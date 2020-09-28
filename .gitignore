@@ -1,0 +1,4 @@
+# Certificate related
+*.cert
+*.key
+*.pem
