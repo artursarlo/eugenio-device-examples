@@ -2,3 +2,6 @@
 *.cert
 *.key
 *.pem
+.venv
+.pio
+.vscode
