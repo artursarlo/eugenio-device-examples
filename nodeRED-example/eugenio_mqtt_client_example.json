@@ -1,0 +1,198 @@
+[
+    {
+        "id": "d84c60e5.7555f",
+        "type": "tab",
+        "label": "Eugenio Mqtt Client Output Example",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "eebffe2f.4069d",
+        "type": "mqtt out",
+        "z": "d84c60e5.7555f",
+        "name": "Mqtt Client Output",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "9e1c7392.bc657",
+        "x": 910,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "908c4c6f.6873a",
+        "type": "trigger",
+        "z": "d84c60e5.7555f",
+        "op1": "1",
+        "op2": "1",
+        "op1type": "num",
+        "op2type": "num",
+        "duration": "-30",
+        "extend": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "name": "",
+        "x": 270,
+        "y": 200,
+        "wires": [
+            [
+                "1495887d.b793a8"
+            ]
+        ]
+    },
+    {
+        "id": "ba7fc5dd.8bd5f8",
+        "type": "inject",
+        "z": "d84c60e5.7555f",
+        "name": "",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 200,
+        "wires": [
+            [
+                "908c4c6f.6873a"
+            ]
+        ]
+    },
+    {
+        "id": "1495887d.b793a8",
+        "type": "function",
+        "z": "d84c60e5.7555f",
+        "name": "mqtt_message_construction_function",
+        "func": "mqtt_msg = {\n    \"topic\": \"devices/55abe5ac-cd63-47a2-b4a7-d6c01b8b88ae/messages/events/\",\n    \"payload\": {\n        \"schema\": \"test_schema\",\n        \"payload\":{\n            \"field0\":\"0\",\n            \"field1\":\"1\"\n        }\n    }\n}\n\nreturn mqtt_msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 200,
+        "wires": [
+            [
+                "4a2621ca.4e501",
+                "eebffe2f.4069d"
+            ]
+        ]
+    },
+    {
+        "id": "4a2621ca.4e501",
+        "type": "debug",
+        "z": "d84c60e5.7555f",
+        "name": "mqtt_message_debugger",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 830,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2e7c3184.61bfee",
+        "type": "function",
+        "z": "d84c60e5.7555f",
+        "name": "command_execution_and_mqtt_message_resp_construction_function",
+        "func": "var mqtt_req_msg_topic = msg.topic;\nvar mqtt_req_msg_payload = msg.payload;\n\nvar mqtt_req_msg_topic_splitted = mqtt_req_msg_topic.split('/');\n\nvar req_rid = mqtt_req_msg_topic_splitted[4];\nreq_rid = req_rid.split('=')[1];\nvar req_method = mqtt_req_msg_topic_splitted[3]\nvar resp_status_code;\n\nif (req_method == 'ping'){\n    resp_status_code = 200;\n    resp_payload = {};\n}\nelse if (req_method == 'ping_verbose'){\n    resp_status_code = 200;\n    resp_payload = {\n        \"response_ping_key_0\": \"response_ping_value_0\",\n        \"response_ping_key_1\": \"response_ping_value_1\"\n    };\n}\nelse{\n    resp_status_code = 400;\n    resp_payload = {\n        \"error\": \"command not supported by this device\"\n    }\n}\n\n\nvar mqtt_resp_msg_topic = `$iothub/methods/res/${resp_status_code}/?$rid=${req_rid}`;\nvar mqtt_resp_msg_payload = resp_payload;\n\nreturn {'topic': mqtt_resp_msg_topic, 'payload': mqtt_resp_msg_payload};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "b30764f2.0e4578",
+                "eebffe2f.4069d"
+            ]
+        ]
+    },
+    {
+        "id": "6c6328de.7bfa08",
+        "type": "debug",
+        "z": "d84c60e5.7555f",
+        "name": "mqtt_message_debugger",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 410,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "620a5dd4.7c2f04",
+        "type": "mqtt in",
+        "z": "d84c60e5.7555f",
+        "name": "Mqtt Client Input",
+        "topic": "$iothub/methods/POST/#",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "9e1c7392.bc657",
+        "x": 120,
+        "y": 420,
+        "wires": [
+            [
+                "2e7c3184.61bfee",
+                "6c6328de.7bfa08"
+            ]
+        ]
+    },
+    {
+        "id": "b30764f2.0e4578",
+        "type": "debug",
+        "z": "d84c60e5.7555f",
+        "name": "mqtt_message_debugger",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 930,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "9e1c7392.bc657",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "Eugenio Broker",
+        "broker": "logicalis-eugeniostg-iothub.azure-devices.net",
+        "port": "8883",
+        "tls": "29eb6938.508c86",
+        "clientid": "YOUR-DEVICE-ID",
+        "usetls": true,
+        "compatmode": false,
+        "keepalive": "5",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "29eb6938.508c86",
+        "type": "tls-config",
+        "z": "",
+        "name": "SSL Certificates",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "cert.pem",
+        "keyname": "key.pem",
+        "caname": "CA.cert",
+        "servername": "",
+        "verifyservercert": false
+    }
+]
