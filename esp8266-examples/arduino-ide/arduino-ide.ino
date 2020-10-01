@@ -18,7 +18,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <time.h>
-#include "secrets.h"
+#include "secrets_local.h"
 #ifdef USE_ARDUINO_JSON_LIB
 #include <ArduinoJson.h>
 #endif
@@ -277,9 +277,9 @@ void publish_measurements(void){
       "}"
     "}"
   );
-  payload.replace("schema_name", "test_schema");
-  payload.replace("field0_value", "value0");
-  payload.replace("field1_value", "value1");
+  payload.replace("schema_name", "test_schema_ints");
+  payload.replace("field0_value", "0");
+  payload.replace("field1_value", "1");
   Serial.printf("Publishing measurements with payload: %s\r\n", payload.c_str());
   mqtt_publish(payload);
   #endif

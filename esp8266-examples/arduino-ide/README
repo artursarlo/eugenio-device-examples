@@ -1,0 +1,10 @@
+# ESP8266 example using Arduino IDE
+
+## Install PubSubClient library
+In Arduino IDE, press ctrl + shift + i, it will open the Library Manager. Search for PubSubClient by Nick O'Leary and install the latest version.
+
+## Install ArduinoJson library
+In Arduino IDE, press ctrl + shift + i, it will open the Library Manager. Search for ArduinoJson by Benoit Blanchon and install the latest version.
+
+## If you happen to not have the ESP8266 board files yet
+Follow this tutorial: https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/
